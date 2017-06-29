@@ -36,14 +36,23 @@ export default merge.smart(baseConfig, {
 
   target: 'electron-renderer',
 
-  entry: [
-    'react-hot-loader/patch',
-    `webpack-dev-server/client?http://localhost:${port}/`,
-    'webpack/hot/only-dev-server',
-    path.join(__dirname, 'app/index.js'),
-  ],
+  entry: {
+    primary: [
+      'react-hot-loader/patch',
+      `webpack-dev-server/client?http://localhost:${port}/`,
+      'webpack/hot/only-dev-server',
+      path.join(__dirname, 'app/index.js'),
+    ],
+    secondary: [
+      'react-hot-loader/patch',
+      `webpack-dev-server/client?http://localhost:${port}/`,
+      'webpack/hot/only-dev-server',
+      path.join(__dirname, 'app/secondRenderer.js'),
+    ],
+  },
 
   output: {
+    filename: '[name].entry.js',
     publicPath: `http://localhost:${port}/dist/`
   },
 
@@ -244,8 +253,8 @@ export default merge.smart(baseConfig, {
           ['run', 'start-hot-renderer'],
           { shell: true, env: process.env, stdio: 'inherit' }
         )
-        .on('close', code => process.exit(code))
-        .on('error', spawnError => console.error(spawnError));
+          .on('close', code => process.exit(code))
+          .on('error', spawnError => console.error(spawnError));
       }
     }
   },

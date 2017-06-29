@@ -15,9 +15,13 @@ export default merge.smart(baseConfig, {
 
   target: 'electron-renderer',
 
-  entry: ['babel-polyfill', './app/index'],
+  entry: {
+    primary: ['babel-polyfill', './app/index'],
+    secondary: ['babel-polyfill', './app/secondRenderer'],
+  },
 
   output: {
+    filename: '[name].entry.js',
     path: path.join(__dirname, 'app/dist'),
     publicPath: '../dist/'
   },
