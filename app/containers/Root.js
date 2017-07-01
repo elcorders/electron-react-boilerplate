@@ -9,20 +9,10 @@ type RootType = {
   history: {}
 };
 
-// export default function Root({ store, history }: RootType) {
-//   return (
-//     <Provider store={store}>
-//       <ConnectedRouter history={history}>
-//         <Routes />
-//       </ConnectedRouter>
-//     </Provider>
-//   );
-// }
-
-export default function Root({ store }) {
+export default function Root({ store, history }: RootType) {
   return (
     <Provider store={store}>
-      <ConnectedRouter>
+      <ConnectedRouter history={history}>
         <Routes />
       </ConnectedRouter>
     </Provider>
