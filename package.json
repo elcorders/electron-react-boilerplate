@@ -187,6 +187,7 @@
   },
   "dependencies": {
     "electron-debug": "^1.1.0",
+    "electron-redux": "^1.2.10",
     "font-awesome": "^4.7.0",
     "history": "^4.6.1",
     "react": "^15.5.4",

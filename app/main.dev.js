@@ -12,8 +12,11 @@
  */
 import { app, BrowserWindow } from 'electron';
 import MenuBuilder from './menu';
+// import configureStore from './store/configureStore';
+import { configureStore } from './store/configureStore.dev';
 
 let mainWindow = null;
+// let store;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -40,6 +43,11 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
+// store.subscribe(async () => {
+//   // persist store changes
+//   // TODO: should this be blocking / wait? _.throttle?
+//   // await storage.set('state', store.getState());
+// });
 
 /**
  * Add event listeners...
@@ -53,6 +61,7 @@ app.on('window-all-closed', () => {
   }
 });
 
+let store = configureStore({}, 'main');
 
 app.on('ready', async () => {
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
