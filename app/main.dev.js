@@ -43,12 +43,6 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
-// store.subscribe(async () => {
-//   // persist store changes
-//   // TODO: should this be blocking / wait? _.throttle?
-//   // await storage.set('state', store.getState());
-// });
-
 /**
  * Add event listeners...
  */
@@ -61,7 +55,7 @@ app.on('window-all-closed', () => {
   }
 });
 
-const store = configureStore({ counter: 0 }, 'main');
+const store = configureStore(global.state, 'main');
 
 app.on('ready', async () => {
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {

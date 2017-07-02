@@ -24,7 +24,7 @@
 /** ORIGINAL END */
 
 /* eslint-disable no-param-reassign */
-import { INCREMENT_COUNTER } from '../actions/counter';
+import { INCREMENT_COUNTER, DECREMENT_COUNTER } from '../actions/counter';
 
 export type counterStateType = {
   count: number,
@@ -32,7 +32,8 @@ export type counterStateType = {
 };
 
 type actionType = {
-  type: string
+  type: string,
+  payload: {} | void
 };
 
 const initialState = {
@@ -57,7 +58,15 @@ export default function counter(state: counterStateType = initialState, action: 
         count: parseInt(state.count + step, 10) || initialState.count,
       };
     }
-
+    case `${DECREMENT_COUNTER}_FULFILLED`:
+    case DECREMENT_COUNTER: {
+      const step = action.payload || 1;
+      return {
+        ...state,
+        loading: false,
+        count: parseInt(state.count - step, 10) || initialState.count,
+      };
+    }
     default:
       return state;
   }

@@ -68,7 +68,7 @@ export function decrement() {
 }
 
 // FSA with a payload
-export function incrementBy(step) {
+export function incrementBy(step: number) {
   return {
     type: INCREMENT_COUNTER,
     payload: step,
@@ -87,8 +87,7 @@ export function incrementAsync() {
 
 export function incrementIfOdd() {
   return (dispatch: (action: actionType) => void, getState: () => counterStateType) => {
-    const { count } = getState();
-
+    const count = getState().counter.count;
     if (count % 2 === 0) {
       return;
     }
@@ -98,7 +97,7 @@ export function incrementIfOdd() {
 }
 
 // redux-thunk action that triggers FSA with payload
-export function incrementByAsync(step) {
+export function incrementByAsync(step: number) {
   return dispatch => {
     setTimeout(() => {
       dispatch(incrementBy(step));

@@ -61,8 +61,6 @@ const configureStore = (initialState, scope = 'main') => {
   scope === 'main' ? middleware.push(triggerAlias) :
     middleware.push(forwardToMain);
 
-  // console.log('Scope: ', scope, ' Middlewares: ', middleware);
-
   // Apply Middleware & Compose Enhancers
   enhancers.push(applyMiddleware(...middleware));
   const enhancer = composeEnhancers(...enhancers);
