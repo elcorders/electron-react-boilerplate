@@ -13,7 +13,7 @@
 import { app, BrowserWindow } from 'electron';
 import MenuBuilder from './menu';
 // import configureStore from './store/configureStore';
-import { configureStore } from './store/configureStore.dev';
+import { configureStore } from './store/configureStore';
 
 let mainWindow = null;
 // let store;
@@ -61,7 +61,7 @@ app.on('window-all-closed', () => {
   }
 });
 
-let store = configureStore({}, 'main');
+const store = configureStore({ counter: 0 }, 'main');
 
 app.on('ready', async () => {
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {

@@ -3,20 +3,19 @@ import thunk from 'redux-thunk';
 import { createMemoryHistory } from 'history';
 import { routerMiddleware, routerActions } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
+import { forwardToMain, forwardToRenderer, triggerAlias, replayActionMain, replayActionRenderer } from 'electron-redux';
 import rootReducer from '../reducers';
 import * as counterActions from '../actions/counter';
 // import type { counterStateType } from '../reducers/counter';
-//
-import { forwardToMain, forwardToRenderer, triggerAlias, replayActionMain, replayActionRenderer } from 'electron-redux';
 
-let history = createMemoryHistory();
+const history = createMemoryHistory();
 
 /**
  * @param  {Object} initialState
  * @param  {String} [scope='main|renderer']
  * @return {Object} store
  */
-const configureStore = (initialState = {}, scope = 'main') => {
+const configureStore = (initialState, scope = 'main') => {
   // Redux Configuration
   const middleware = [];
   const enhancers = [];
@@ -43,32 +42,38 @@ const configureStore = (initialState = {}, scope = 'main') => {
     ...counterActions,
     ...routerActions,
   };
+
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose
-  /* eslint-disable no-underscore-dangle */
-
-
   let composeEnhancers;
-
-  scope === 'main' ? composeEnhancers = compose : composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-      // Options: http://zalmoxisus.github.io/redux-devtools-extension/API/Arguments.html
-      actionCreators,
-    })
-    : compose;
+  /* eslint-disable no-underscore-dangle */
+  if (scope === 'renderer') {
+    composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        // Options: http://zalmoxisus.github.io/redux-devtools-extension/API/Arguments.html
+        actionCreators,
+      })
+      : compose;
+  } else {
+    composeEnhancers = compose;
+  }
   /* eslint-enable no-underscore-dangle */
 
   scope === 'main' ? middleware.push(triggerAlias) :
     middleware.push(forwardToMain);
 
+  // console.log('Scope: ', scope, ' Middlewares: ', middleware);
+
   // Apply Middleware & Compose Enhancers
   enhancers.push(applyMiddleware(...middleware));
   const enhancer = composeEnhancers(...enhancers);
 
-  // let initialState = {};
-  // if (scope !== 'main') { initialState = getInitialStateRenderer(); }
-
   // Create Store
   const store = createStore(rootReducer, initialState, enhancer);
+
+  // Subscribe to Store Changes
+  store.subscribe(() => {
+    console.log('store changed: ', store.getState());
+  });
 
   if (module.hot) {
     module.hot.accept('../reducers', () =>
@@ -76,18 +81,9 @@ const configureStore = (initialState = {}, scope = 'main') => {
     );
   }
 
-  // scope === 'main' ? replayActionMain(store) : replayActionRenderer(store);
-
-  if (scope === 'main') {
-    console.log('throw');
-    console.log('store: ', store);
-    replayActionMain(store);
-  } else {
-    replayActionRenderer(store);
-  }
+  scope === 'main' ? replayActionMain(store) : replayActionRenderer(store);
 
   return store;
 };
 
-// export default { configureStore, history };
-export default { configureStore };
+export default { configureStore, history };

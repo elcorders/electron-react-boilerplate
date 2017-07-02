@@ -9,11 +9,17 @@ class Counter extends Component {
     incrementIfOdd: () => void,
     incrementAsync: () => void,
     decrement: () => void,
-    counter: number
+    // counter: number
+    counter: {
+      count: number,
+      loading: boolean
+    }
   };
 
   render() {
-    const { increment, incrementIfOdd, incrementAsync, decrement, counter } = this.props;
+    const { increment, incrementIfOdd, incrementAsync, decrement } = this.props;
+    const counter = this.props.counter.count;
+
     return (
       <div>
         <div className={styles.backButton} data-tid="backButton">
